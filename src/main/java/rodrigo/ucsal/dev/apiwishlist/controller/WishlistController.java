@@ -1,13 +1,13 @@
-package rodrigo.ucsal.dev.apiwishlist;
+package rodrigo.ucsal.dev.apiwishlist.controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiWishlistApplication {
+public class WishlistController {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApiWishlistApplication.class, args);
+        SpringApplication.run(WishlistController.class, args);
     }
 
 }
