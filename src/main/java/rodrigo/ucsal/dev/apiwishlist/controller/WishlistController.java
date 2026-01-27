@@ -1,13 +1,39 @@
 package rodrigo.ucsal.dev.apiwishlist.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import rodrigo.ucsal.dev.apiwishlist.dto.AdicionarProdutoRequest;
+import rodrigo.ucsal.dev.apiwishlist.service.WishlistService;
+import rodrigo.ucsal.dev.apiwishlist.dto.RemoverProdutoRequest;
 
-@SpringBootApplication
+@RestController
+@RequestMapping("/wishlist")
 public class WishlistController {
 
-    public static void main(String[] args) {
-        SpringApplication.run(WishlistController.class, args);
+    private final WishlistService wishlistService;
+
+    public WishlistController(WishlistService wishlistService) {
+        this.wishlistService = wishlistService;
     }
 
+
+    @PostMapping("/{clienteId}/produtos")
+    public ResponseEntity<Void> adicionarProduto(
+            @PathVariable String clienteId,
+            @RequestBody @Valid AdicionarProdutoRequest request //
+    ) {
+        wishlistService.adicionarProduto(clienteId, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/{clienteId}/produtos/{produtoId}")
+    public ResponseEntity<Void> removerProduto(
+            @PathVariable String clienteId,
+            @RequestBody @Valid RemoverProdutoRequest request) {
+        wishlistService.removerProduto(clienteId, request.produtoId());
+        return ResponseEntity.ok().build();
+    }
 }
