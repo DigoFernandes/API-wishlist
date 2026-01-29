@@ -43,4 +43,10 @@ public class WishlistController {
         ListarProdutosResponse response = wishlistService.listarProdutos(clienteId);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/consulta/{produtoId}")
+    public ResponseEntity<Void> consultarProduto(@PathVariable String produtoId) {
+        boolean existe = wishlistService.consultarProduto(produtoId);
+        return existe ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
 }

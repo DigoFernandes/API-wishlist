@@ -7,10 +7,6 @@ import rodrigo.ucsal.dev.apiwishlist.entity.Wishlist;
 import rodrigo.ucsal.dev.apiwishlist.repository.WishlistRepository;
 import rodrigo.ucsal.dev.apiwishlist.repository.projection.ProdutoView;
 
-import java.util.List;
-import java.util.Set;
-
-
 @Service
 public class WishlistService {
 
@@ -29,7 +25,7 @@ public class WishlistService {
     }
 
     public void removerProduto(String clienteId, String produtoId) {
-        Wishlist wishlist = repository.getByClienteId(clienteId).orElseThrow(() -> new RuntimeException());
+        Wishlist wishlist = repository.getByClienteId(clienteId).orElseThrow(() -> new RuntimeException("Product Not Found in Wishlist"));
         wishlist.removeProduto(produtoId);
         repository.save(wishlist);
     }
@@ -38,6 +34,10 @@ public class WishlistService {
         ProdutoView wishlist = repository.findByClienteId(clienteId)
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for clienteId: " + clienteId));
         return new ListarProdutosResponse(wishlist.produtosIds());
+    }
+
+    public boolean consultarProduto(String produtoId) {
+        return repository.existsByProdutosIdsContaining(produtoId);
     }
 
 }
