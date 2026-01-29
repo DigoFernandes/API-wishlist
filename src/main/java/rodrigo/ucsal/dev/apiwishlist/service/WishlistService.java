@@ -10,6 +10,7 @@ import rodrigo.ucsal.dev.apiwishlist.repository.projection.ProdutoView;
 @Service
 public class WishlistService {
 
+    private static final int MAX_PRODUTOS = 20;
     private final WishlistRepository repository;
 
     public WishlistService(WishlistRepository repository) {
@@ -19,6 +20,10 @@ public class WishlistService {
     public void adicionarProduto(String clienteId, AdicionarProdutoRequest request) {
         Wishlist wishlist = repository.getByClienteId(clienteId)
                 .orElse(new Wishlist(clienteId));
+
+        if (wishlist.getProdutosIds().size() >= MAX_PRODUTOS) {
+            throw new RuntimeException("Wishlist limit exceeded");
+        }
 
         wishlist.addProduto(request.produtoId());
         repository.save(wishlist);
@@ -37,6 +42,7 @@ public class WishlistService {
     }
 
     public boolean consultarProduto(String produtoId) {
+
         return repository.existsByProdutosIdsContaining(produtoId);
     }
 
