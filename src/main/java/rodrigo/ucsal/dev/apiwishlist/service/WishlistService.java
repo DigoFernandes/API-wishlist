@@ -2,8 +2,13 @@ package rodrigo.ucsal.dev.apiwishlist.service;
 
 import org.springframework.stereotype.Service;
 import rodrigo.ucsal.dev.apiwishlist.dto.AdicionarProdutoRequest;
+import rodrigo.ucsal.dev.apiwishlist.dto.ListarProdutosResponse;
 import rodrigo.ucsal.dev.apiwishlist.entity.Wishlist;
 import rodrigo.ucsal.dev.apiwishlist.repository.WishlistRepository;
+import rodrigo.ucsal.dev.apiwishlist.repository.projection.ProdutoView;
+
+import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -16,7 +21,7 @@ public class WishlistService {
     }
 
     public void adicionarProduto(String clienteId, AdicionarProdutoRequest request) {
-        Wishlist wishlist = repository.findByClienteId(clienteId)
+        Wishlist wishlist = repository.getByClienteId(clienteId)
                 .orElse(new Wishlist(clienteId));
 
         wishlist.addProduto(request.produtoId());
@@ -24,8 +29,15 @@ public class WishlistService {
     }
 
     public void removerProduto(String clienteId, String produtoId) {
-        Wishlist wishlist = repository.findByClienteId(clienteId).orElseThrow(() -> new RuntimeException());
+        Wishlist wishlist = repository.getByClienteId(clienteId).orElseThrow(() -> new RuntimeException());
         wishlist.removeProduto(produtoId);
         repository.save(wishlist);
     }
+
+    public ListarProdutosResponse listarProdutos(String clienteId) {
+        ProdutoView wishlist = repository.findByClienteId(clienteId)
+                .orElseThrow(() -> new RuntimeException("Wishlist not found for clienteId: " + clienteId));
+        return new ListarProdutosResponse(wishlist.produtosIds());
+    }
+
 }
